@@ -19,7 +19,7 @@ if __name__ == "__main__":
             elif elem.find("optimize") != -1  and elem.index("optimize") == 0:
                 productName = elem[elem.index(":")+2:len(elem)-1]
             elif elem.count(':') == 1:
-                stock[elem[:elem.index(":")]] = elem[elem.index(":")+1:]
+                stock[elem[:elem.index(":")]] = int(elem[elem.index(":")+1:])
             elif len(elem) > 1:
                 processName = elem[:elem.index(":")]
                 process[processName] = {"ingredients": {}, "products": {}, "time": 0}
