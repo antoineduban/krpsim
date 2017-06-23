@@ -1,3 +1,5 @@
+import copy
+
 class Delta():
     def __init__(self, stock):
         self.stock = stock
@@ -6,20 +8,20 @@ class Delta():
 
 def makeRecepies(stock, ingredients, products):
     newStock = stock.copy()
-    for key, value in ingredients:
+    for key, value in ingredients.items():
         newStock[key] -= value
         if newStock[key] < 0:
             return newStock, False
-    for key, value in products:
+    for key, value in products.items():
         newStock[key] += value
     return newStock, True
 
 def optimize(processes, productName, delta, depth):
     if depth == 0:
         return delta
-    bestDelta = delta.copy()
+    bestDelta = copy.deepcopy(delta)
     for pName, p in processes.items():
-        pStock, pSuccess = procExec(delta.stock, p['ingredients'], p['products'])
+        pStock, pSuccess = makeRecepies(delta.stock, p['ingredients'], p['products'])
         if pSuccess:
             pDelta = Delta(pStock)
             pDelta.processChain += pName
