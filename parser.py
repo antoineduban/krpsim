@@ -38,6 +38,6 @@ if __name__ == "__main__":
         print("Parsing error: ",e)
 
     delta = Delta(stock)
-    delta = optimize(process, productName, delta, 10)
+    delta = optimize(process, productName, delta, 8)
 
-    print("delta processes: " + delta.processChain + "\nstock: " + delta.stock)
+    print(delta)
