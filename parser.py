@@ -24,14 +24,16 @@ if __name__ == "__main__":
                 processName = elem[:elem.index(":")]
                 process[processName] = {"ingredients": {}, "products": {}, "time": 0}
                 elem = elem[elem.index(":")+1:]
-                ingredientsTab = elem[1:elem.index(")")].split(';')
-                for val in ingredientsTab:
-                    process[processName]["ingredients"][val[:val.index(":")]] = int(val[val.index(":")+1:])
-                elem = elem[1:]
-                productsTab = elem[elem.index("(")+1:]
-                productsTab = productsTab[:productsTab.index(")")].split(";")
-                for val in productsTab:
-                    process[processName]["products"][val[:val.index(":")]] = int(val[val.index(":")+1:])
+                if len(elem) > 2 and elem[0] != ':' and elem[1] != ':':
+                    ingredientsTab = elem[1:elem.index(")")].split(';')
+                    for val in ingredientsTab:
+                        process[processName]["ingredients"][val[:val.index(":")]] = int(val[val.index(":")+1:])
+                    elem = elem[1:]
+                if len(elem) > 2 and elem[0] != ':' and elem[1] != ':':
+                    productsTab = elem[elem.index("(")+1:]
+                    productsTab = productsTab[:productsTab.index(")")].split(";")
+                    for val in productsTab:
+                        process[processName]["products"][val[:val.index(":")]] = int(val[val.index(":")+1:])
                 elem = elem[elem.rfind(":")+1:]
                 process[processName]['time'] = int(elem)
     except Exception as e:
