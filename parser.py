@@ -1,4 +1,5 @@
 import sys
+from algo import Delta, optimize
 
 stock = dict()
 productName = ""
@@ -37,3 +38,8 @@ if __name__ == "__main__":
                 process[processName]['time'] = int(elem)
     except Exception as e:
         print("Parsing error: ",e)
+
+    delta = Delta(stock)
+    delta = optimize(process, productName, delta, 10)
+
+    print("delta processes: " + delta.processChain + "\nstock: " + delta.stock)
