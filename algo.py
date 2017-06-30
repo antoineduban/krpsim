@@ -79,25 +79,8 @@ def getRandomSet(processes, delta, productName):
 
 
 def cross(x, y):
-    new1 = []
-    new2 = []
-    it = random.randint(0, len(x.processChain)-1)
-    c = 0
-    for i in x.processChain:
-        if (c < it):
-            new1.append(i)
-        else:
-            new1.append(y.processChain[c])
-        c += 1
-    c = 0
-    for i in y.processChain:
-        if (c < it):
-            new2.append(i)
-        else:
-            new2.append(x.processChain[c])
-        c += 1
-    x.processChain = new1
-    y.processChain = new2
+    cxpoint = random.randint(0, len(x.processChain)-1)
+    x.processChain[cxpoint:], y.processChain[cxpoint:] = y.processChain[cxpoint:], x.processChain[cxpoint:]
     return x, y
 
 def mutate(s):
@@ -113,19 +96,23 @@ def applyToStock(s, processes):
         for v in processes:
             if val == v:
                 tmpStock, pSuccess = makeRecepies(s.stock, processes[v]['ingredients'], processes[v]['products'])
-                if (pSuccess == True):
-                    s.stock = tmpStock.copy()
-                else:
+                if (not pSuccess):
                     return s
+                s.stock = tmpStock.copy()
     return s
+
 
 def crossAndMutate(bests, processes):
     newSet = []
     for x in bests:
         for y in bests:
             new1, new2 = cross(x, y)
-            new1 = mutate(new1)
-            new2 = mutate(new2)
+            chance = random.randint(0, 1000)
+            if (chance == 1):
+                new1 = mutate(new1)
+            chance = random.randint(0, 1000)
+            if (chance == 1):
+                new2 = mutate(new2)
             new1 = applyToStock(new1, processes)
             new2 = applyToStock(new2, processes)
             newSet.append(new1)
@@ -138,16 +125,22 @@ def resetStocks(bests, initStock):
         val.stock = initStock.copy()
     return bests
 
-def evolve(chains, depth, productName, processes, initStock):
-    bests = nlargest(10, chains, key=lambda e:e.stock[productName])
-    bests = resetStocks(bests, initStock)
-    if (depth == 0):
-        return bests
-    newSet = crossAndMutate(bests, processes)
-    return evolve(newSet, depth - 1, productName, processes, initStock) 
 
 def genetic(processes, productName, delta, initStock):
+    bestOfAll = Delta(initStock)
+    bestOfAll.stock[productName] = 0
     chains = getRandomSet(processes, delta, productName)
-    bests = evolve(chains, 900, productName, processes, initStock)
-    for val in bests:
-        print(val)
+    i = 0
+    bests = []
+    while 1:
+        bests = nlargest(10, chains, key=lambda e:e.stock[productName])
+        for val in bests:
+            if val.stock[productName] > bestOfAll.stock[productName]:
+                bestOfAll = val
+        bests = resetStocks(bests, initStock)
+        if (i == 10000):
+         break
+        chains = crossAndMutate(bests, processes)
+        i += 1
+
+    print(bestOfAll)
