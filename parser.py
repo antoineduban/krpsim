@@ -1,5 +1,5 @@
 import sys
-from algo import Delta, optimize
+from algo import *
 
 stock = dict()
 productName = ""
@@ -29,7 +29,7 @@ if __name__ == "__main__":
                     for val in ingredientsTab:
                         process[processName]["ingredients"][val[:val.index(":")]] = int(val[val.index(":")+1:])
                     elem = elem[1:]
-                if len(elem) > 2 and elem[0] != ':' and elem[1] != ':':
+                if '(' in elem:
                     productsTab = elem[elem.index("(")+1:]
                     productsTab = productsTab[:productsTab.index(")")].split(";")
                     for val in productsTab:
@@ -40,6 +40,6 @@ if __name__ == "__main__":
         print("Parsing error: ",e)
 
     delta = Delta(stock)
-    delta = optimize(process, productName, delta, 8)
+    #delta = optimize(process, productName, delta, 8)
+    genetic(process, productName, delta, stock)
 
-    print(delta)
